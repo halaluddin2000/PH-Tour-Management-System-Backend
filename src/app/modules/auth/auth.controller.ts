@@ -5,20 +5,13 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sedResponse } from "../../utils/sendResponse";
 import { AuthService } from "./auth.service";
 import AppError from "../../errorHelpers/AppError";
+import { setCookies } from "../../utils/setCookis";
 
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const loginInfo = await AuthService.credentialsLogin(req.body);
 
-    res.cookie("accessToken", loginInfo.accessToken, {
-      httpOnly: true,
-      secure: false,
-    });
-
-    res.cookie("refreshToken", loginInfo.refreshToken, {
-      httpOnly: true,
-      secure: false,
-    });
+    setCookies(res, loginInfo);
 
     sedResponse(res, {
       success: true,
@@ -43,6 +36,10 @@ const getNewAccessToken = catchAsync(
     const tokenInfo = await AuthService.getNewAccessToken(
       refreshToken as string
     );
+    setCookies(res, {
+      accessToken: "jwt_string",
+      refreshToken: "refresh_string",
+    });
 
     sedResponse(res, {
       success: true,
