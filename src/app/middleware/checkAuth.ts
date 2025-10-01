@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { NextFunction, Request, Response } from "express";
 import AppError from "../errorHelpers/AppError";
 import { verifyToken } from "../utils/jwt";
@@ -20,6 +21,7 @@ export const checkAuth =
       if (!authRoles.includes(verifiedToken.role)) {
         throw new AppError(403, "You are not permitted to view this route!!!");
       }
+      req.user = verifiedToken;
       next();
     } catch (error) {
       console.log("jwt error", error);

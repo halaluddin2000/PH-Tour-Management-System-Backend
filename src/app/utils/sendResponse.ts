@@ -9,7 +9,7 @@ interface TResponse<T> {
   success: boolean;
   message: string;
   data: T;
-  meta: TMeta;
+  meta?: TMeta;
 }
 
 export const sedResponse = <T>(res: Response, data: TResponse<T>) => {
