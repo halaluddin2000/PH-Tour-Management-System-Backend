@@ -83,7 +83,7 @@ const resetPassword = catchAsync(
     sedResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: "User Log Out Successfully",
+      message: "Password changed Successfully",
       data: null,
     });
   }
