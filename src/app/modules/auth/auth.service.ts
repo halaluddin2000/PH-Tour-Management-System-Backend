@@ -9,7 +9,7 @@ import {
   createUserTokens,
 } from "../user/userTokens";
 import { JwtPayload } from "jsonwebtoken";
-import { envVars } from "../../../config/env";
+import { envVars } from "../../config/env";
 
 const credentialsLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;

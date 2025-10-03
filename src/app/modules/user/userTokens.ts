@@ -1,5 +1,5 @@
 import { JwtPayload } from "jsonwebtoken";
-import { envVars } from "../../../config/env";
+import { envVars } from "../../config/env";
 import { generateToken, verifyToken } from "../../utils/jwt";
 import { IsActive, IUser } from "./user.interface";
 import { User } from "./user.model";
