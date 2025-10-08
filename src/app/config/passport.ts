@@ -9,6 +9,65 @@ import {
 import { envVars } from "./env";
 import { User } from "../modules/user/user.model";
 import { Role } from "../modules/user/user.interface";
+import { Strategy as LocalStrategy } from "passport-local";
+import bcryptjs from "bcryptjs";
+
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    async (email: string, password: string, done) => {
+      try {
+        const isUserExist = await User.findOne({ email });
+        // if (!isUserExist) {
+        //   return done(null, false, { message: "User does not exist" });
+        // }
+
+        if (!isUserExist) {
+          return done("User does not exist");
+        }
+
+        interface AuthProvider {
+          provider: string;
+          providerId: string;
+        }
+
+        const isGoogleAuthenticated: boolean = (
+          isUserExist.auths as unknown as AuthProvider[]
+        ).some(
+          (providerObjects: AuthProvider) =>
+            providerObjects.provider === "google"
+        );
+
+        // (
+        //   (providerObjects) => providerObjects.provider == "google"
+        // );
+
+        if (isGoogleAuthenticated && !isUserExist.password) {
+          return done(null, false, {
+            message:
+              "You have authenticated through Google. So if you want to login with credentials, then at first login with google and set a password for your Gmail and them you can login with email and password",
+          });
+        }
+
+        const isPasswordMatched = await bcryptjs.compare(
+          password as string,
+          isUserExist.password as string
+        );
+
+        if (!isPasswordMatched) {
+          return done(null, false, { message: "Password does not match" });
+        }
+
+        return done(null, isUserExist);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  )
+);
 
 passport.use(
   new GoogleStrategy(
